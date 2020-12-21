@@ -9,8 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>tunan-flink-basic</artifactId>
-
+    <artifactId>tunan-flink-stream</artifactId>
     <dependencies>
         <dependency>
             <groupId>org.apache.flink</groupId>
@@ -31,8 +30,6 @@
             <version>1.2.17</version>
         </dependency>
     </dependencies>
-
-
     <build>
         <plugins>
             <!-- We use the maven-shade plugin to create a fat jar that contains all necessary dependencies. -->
