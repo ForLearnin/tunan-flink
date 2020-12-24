@@ -79,6 +79,8 @@ under the License.
         <flink.version>1.12.0</flink.version>
         <scala.binary.version>2.12</scala.binary.version>
         <scala.version>2.12.10</scala.version>
+        <scalikejdbc.version>3.3.2</scalikejdbc.version>
+        <jdbc.version>5.1.38</jdbc.version>
     </properties>
 
     <dependencyManagement>
@@ -129,6 +131,24 @@ under the License.
                 <groupId>log4j</groupId>
                 <artifactId>log4j</artifactId>
                 <version>1.2.17</version>
+            </dependency>
+
+            <dependency>
+                <groupId>mysql</groupId>
+                <artifactId>mysql-connector-java</artifactId>
+                <version>${jdbc.version}</version>
+            </dependency>
+            <!--scalikejdbc相关依赖-->
+            <dependency>
+                <groupId>org.scalikejdbc</groupId>
+                <artifactId>scalikejdbc_${scala.binary.version}</artifactId>
+                <version>${scalikejdbc.version}</version>
+            </dependency>
+            <!--scalikejdbc相关依赖-->
+            <dependency>
+                <groupId>org.scalikejdbc</groupId>
+                <artifactId>scalikejdbc-config_${scala.binary.version}</artifactId>
+                <version>${scalikejdbc.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
