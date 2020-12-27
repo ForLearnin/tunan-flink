@@ -81,10 +81,23 @@ under the License.
         <scala.version>2.12.10</scala.version>
         <scalikejdbc.version>3.3.2</scalikejdbc.version>
         <jdbc.version>5.1.38</jdbc.version>
+        <hadoop.version>2.6.0-cdh5.16.2</hadoop.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>org.apache.flink</groupId>
+                <artifactId>flink-statebackend-rocksdb_2.12</artifactId>
+                <version>${flink.version}</version>
+
+            </dependency>
+            <dependency>
+                <groupId>org.apache.hadoop</groupId>
+                <artifactId>hadoop-client</artifactId>
+                <version>${hadoop.version}</version>
+            </dependency>
+
             <!-- Apache Flink dependencies -->
             <!-- These dependencies are provided, because they should not be packaged into the JAR file. -->
             <dependency>
