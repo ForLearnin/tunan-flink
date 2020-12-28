@@ -26,7 +26,7 @@ object SideOutput {
         val changsha = new OutputTag[Traffic]("长沙市分流")
         val huaihua = new OutputTag[Traffic]("怀化市分流")
 
-        // 1.12版本废弃了
+        // 1.12版本废弃了split
         val markFlow = traffic.process(new ProcessFunction[Traffic, Traffic] {
             override def processElement(value: Traffic, ctx: ProcessFunction[Traffic, Traffic]#Context, out: Collector[Traffic]): Unit = {
 

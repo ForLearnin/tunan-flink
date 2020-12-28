@@ -10,6 +10,7 @@ import org.apache.flink.api.common.time.Time
 import org.apache.flink.api.scala._
 import org.apache.flink.configuration.Configuration
 import org.apache.flink.contrib.streaming.state.RocksDBStateBackend
+import org.apache.flink.runtime.state.filesystem.FsStateBackend
 import org.apache.flink.streaming.api.CheckpointingMode
 import org.apache.flink.streaming.api.checkpoint.ListCheckpointed
 import org.apache.flink.streaming.api.datastream.DataStreamSink
@@ -37,7 +38,8 @@ object UserDefinedState {
 		env.enableCheckpointing(1000)
 		env.getCheckpointConfig.setCheckpointingMode(CheckpointingMode.EXACTLY_ONCE) // 默认就是这个
 		env.getCheckpointConfig.enableExternalizedCheckpoints(ExternalizedCheckpointCleanup.RETAIN_ON_CANCELLATION)
-		env.setStateBackend(new RocksDBStateBackend("file:///softwarespace/tunan-flink/tunan-flink-stream/checkpoint"))
+//		env.setStateBackend(new RocksDBStateBackend("file:///softwarespace/tunan-flink/tunan-flink-stream/checkpoint"))
+		env.setStateBackend(new RocksDBStateBackend("file:///sparkspace/tunan-flink/tunan-flink-stream/checkpoint"))
 		env.setRestartStrategy(RestartStrategies.fixedDelayRestart(2, Time.seconds(2)))
 	}
 
@@ -69,7 +71,7 @@ object UserDefinedState {
 		}).keyBy(x => x._1).flatMap(new MapValueStateFlatMap).print()
 	}
 
-	def listCheckpointState(env: StreamExecutionEnvironment) = {
+	def listCheckpointState(env: StreamExecutionEnvironment): DataStreamSink[(String, Int)] = {
 		val socket = env.socketTextStream("aliyun", 9999).filter(_.nonEmpty).map(row => {
 			if (row.contains("t")) {
 				throw new RuntimeException("输入 t , 拉黑程序")
@@ -88,7 +90,8 @@ class ListCheckpointFlatMap extends RichFlatMapFunction[(String, String), (Strin
 	private var sum: Int = 0
 
 	override def flatMap(value: (String, String), out: Collector[(String, Int)]): Unit = {
-		out.collect(value._2,sum+1)
+		sum += 1
+		out.collect(value._2,sum)
 	}
 
 	override def snapshotState(checkpointId: Long, timestamp: Long): util.List[Integer] = {
