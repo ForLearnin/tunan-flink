@@ -34,7 +34,6 @@ object UserDefinedState {
 		env.execute(this.getClass.getSimpleName)
 	}
 
-
 	private def setCheckpoint(env: StreamExecutionEnvironment): Unit = {
 		env.enableCheckpointing(1000)
 		env.getCheckpointConfig.setCheckpointingMode(CheckpointingMode.EXACTLY_ONCE) // 默认就是这个
