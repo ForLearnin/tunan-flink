@@ -55,7 +55,4 @@ object WriteToMySQL {
 
 		env.execute(this.getClass.getSimpleName)
 	}
-
-
-
 }
