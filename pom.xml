@@ -79,7 +79,7 @@ under the License.
         <flink.version>1.10.0</flink.version>
         <scala.binary.version>2.12</scala.binary.version>
         <scala.version>2.12.10</scala.version>
-        <scalikejdbc.version>3.3.2</scalikejdbc.version>
+        <scalikejdbc.version>2.5.2</scalikejdbc.version>
         <jdbc.version>5.1.38</jdbc.version>
         <hadoop.version>2.6.0-cdh5.16.2</hadoop.version>
     </properties>

@@ -41,7 +41,7 @@ object WindowsApp {
         // agg
         //		aggregateFunction(stream)
         // process
-        //		processFunction(stream)
+        		processFunction(stream)
 
 
         env.execute(this.getClass.getSimpleName)

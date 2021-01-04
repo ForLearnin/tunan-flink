@@ -26,10 +26,10 @@ object UserDefinedState {
 
 		val env = StreamExecutionEnvironment.getExecutionEnvironment
 		setCheckpoint(env)
-		//      valueState(env)
+		      valueState(env)
 		//		mapState(env)
 		//		listCheckpointState(env)
-		checkpointFunctionFlatMap(env)
+//		checkpointFunctionFlatMap(env)
 
 		env.execute(this.getClass.getSimpleName)
 	}
