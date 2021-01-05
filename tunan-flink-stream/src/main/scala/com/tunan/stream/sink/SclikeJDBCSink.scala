@@ -1,6 +1,9 @@
 package com.tunan.stream.sink
 
+import java.sql.{Connection, PreparedStatement}
+
 import com.tunan.stream.bean.Access
+import com.tunan.utils.MySQLUtils
 import org.apache.flink.api.common.state.{ValueState, ValueStateDescriptor}
 import org.apache.flink.api.scala._
 import org.apache.flink.configuration.Configuration
@@ -21,7 +24,7 @@ object SclikeJDBCSink {
 
         val env = StreamExecutionEnvironment.getExecutionEnvironment
 
-        //        val files = env.readTextFile("tunan-flink-stream/data/access.txt")
+//                val files = env.readTextFile("tunan-flink-stream/data/access.txt")
         val files = env.socketTextStream("aliyun", 9999).filter(_.trim.nonEmpty)
 
 
@@ -29,17 +32,19 @@ object SclikeJDBCSink {
         val result = files.map(row => {
             val words = row.split(",").map(_.trim)
             Access(words(0).toLong, words(1), words(2).toLong)
-        }).keyBy(x => (x.time, x.domain)).timeWindow(Time.seconds(3)).process(new ProcessWindowFunction[Access, Access, (Long, String), TimeWindow] {
+        }).keyBy(x => (x.time, x.domain)).timeWindow(Time.seconds(3))
+          .process(new ProcessWindowFunction[Access, Access, (Long, String), TimeWindow] {
 
-//            private var sum: ValueState[Long] = _
+              // 问题1： 为什么结果没有更新到这里
+            private var sum: ValueState[Long] = _
             private val countStateDesc = new ValueStateDescriptor[Long]("count", classOf[Long])
 
             override def process(key: (Long, String), context: Context, elements: Iterable[Access], out: Collector[Access]): Unit = {
 
-                val sum = context.windowState.getState(countStateDesc).value()
+                sum = context.windowState.getState(countStateDesc)
 
-                var currentState = if (0 != sum) {
-                    sum
+                var currentState = if (null != sum) {
+                    sum.value()
                 } else {
                     0L
                 }
@@ -48,22 +53,26 @@ object SclikeJDBCSink {
                     currentState += ele.traffics
                 }
 
-                context.windowState.getState(countStateDesc).update(currentState)
+                sum.update(currentState)
 
                 out.collect(Access(key._1,key._2,currentState))
-
             }
-        }).print()
-
-//        result.addSink(new CustomMySQL).setParallelism(4)
+        })
+//          .sum(2)
+//          .print()
+//
+        result.addSink(new CustomMySQLByJDBC)
 
         env.execute(this.getClass.getSimpleName)
     }
 }
 
 
+// 问题2： 为什么Scalike读文件会没有数据进来,
+// 读取文件报错: Connection pool is not yet initialized.(name:'default)，
+// 单线下不会报错，怀疑是线程不安全
 class CustomMySQL extends RichSinkFunction[Access] {
-    val sql = "REPLACE INTO access(time,domain,traffic) values(?,?,?)"
+    val sql = "REPLACE INTO access(time,domain,traffic) VALUES(?,?,?)"
 
     override def open(parameters: Configuration): Unit = {
         super.open(parameters)
@@ -92,6 +101,41 @@ class CustomMySQL extends RichSinkFunction[Access] {
     override def close(): Unit = {
         super.close()
         DBs.closeAll()
+        println(s"关闭线程: ${Thread.currentThread().getId}")
+    }
+}
+
+
+// 使用JDBC的方式可以读取文件数据写入MySQL,无论是scalike还是jdbc都是拿着线程不还
+class CustomMySQLByJDBC extends RichSinkFunction[Access] {
+    val sql = "REPLACE INTO access(time,domain,traffic) VALUES(?,?,?)"
+
+    var conn:Connection = _
+    var pstate: PreparedStatement = _
+
+    override def open(parameters: Configuration): Unit = {
+        super.open(parameters)
+        conn = MySQLUtils.getConnection
+        pstate = conn.prepareCall(sql)
+        println(s"初始化线程: ${Thread.currentThread().getId}")
+    }
+
+
+    // 每条数据做一次插入操作，性能低下，需要根据window优化
+    override def invoke(access: Access, context: SinkFunction.Context[_]): Unit = {
+        println(s"执行线程: ${Thread.currentThread().getId}")
+
+        pstate.setLong(1,access.time)
+        pstate.setString(2,access.domain)
+        pstate.setLong(3,access.traffics)
+
+        pstate.execute()
+    }
+
+
+    override def close(): Unit = {
+        super.close()
+        MySQLUtils.close(conn,pstate,null)
         println(s"关闭线程: ${Thread.currentThread().getId}")
     }
 }
