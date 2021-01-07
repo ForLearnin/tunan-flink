@@ -14,7 +14,8 @@ object StreamApp {
 
         val env = StreamExecutionEnvironment.getExecutionEnvironment
 
-        val stream = env.socketTextStream(getParameters("host"), getParameters("port").toInt)
+        //        val stream = env.socketTextStream(getParameters("host"), getParameters("port").toInt)
+        val stream = env.socketTextStream("aliyun", 9999)
         println(stream.parallelism)
         stream
           .flatMap(_.toLowerCase.split(","))
@@ -29,7 +30,7 @@ object StreamApp {
     }
 
     private def getParameters: mutable.Map[String, String] = {
-        val map = mutable.HashMap[String,String]()
+        val map = mutable.HashMap[String, String]()
         val tool = ParameterTool.fromPropertiesFile(CONFIG_FILE_PATH)
         val host = tool.getRequired("host")
         val port = tool.getRequired("port")

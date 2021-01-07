@@ -7,7 +7,7 @@ object BatchApp {
     def main(args: Array[String]): Unit = {
 
         val env = ExecutionEnvironment.getExecutionEnvironment
-        val text: DataSet[String] = env.readTextFile("tunan-flink-basic/data/word.txt")
+        val text: DataSet[String] = env.readTextFile("hdfs:///data/word.txt")
         text
           .flatMap(_.toLowerCase.split(","))
           .filter(_.nonEmpty)
