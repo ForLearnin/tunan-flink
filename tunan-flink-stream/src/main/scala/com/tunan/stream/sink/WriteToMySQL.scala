@@ -35,7 +35,9 @@ object WriteToMySQL {
 
 
 			// 每条数据做一次插入操作，性能低下，需要根据window优化
-			override def invoke(value: Access, context: SinkFunction.Context[_]): Unit = {
+
+
+			override def invoke(value: Access, context: SinkFunction.Context): Unit = {
 				pstate.setLong(1,value.time)
 				pstate.setString(2,value.domain)
 				pstate.setLong(3,value.traffics)
