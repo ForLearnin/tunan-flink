@@ -121,8 +121,6 @@ class CustomMySQLByJDBC extends RichSinkFunction[Access] {
 
 
     // 每条数据做一次插入操作，性能低下，需要根据window优化
-
-
     override def invoke(access: Access, context: SinkFunction.Context): Unit = {
         println(s"执行线程: ${Thread.currentThread().getId}")
 
