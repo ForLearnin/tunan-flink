@@ -22,10 +22,14 @@ object FliinkKafkaStateManager {
 
         val env = StreamExecutionEnvironment.getExecutionEnvironment
 
+        // 开启checkpoint
         env.enableCheckpointing(5000)
+        // 设置FsStateBackend
         env.setStateBackend(new FsStateBackend("hdfs:///flink/checkpoint"))
 //        env.setStateBackend(new FsStateBackend("file:///sparkspace/tunan-flink/tunan-flink-kafka/checkpoint"))
+        // 取消时保留文件
         env.getCheckpointConfig.enableExternalizedCheckpoints(ExternalizedCheckpointCleanup.RETAIN_ON_CANCELLATION)
+        // 重试机制
         env.setRestartStrategy(RestartStrategies.fixedDelayRestart(2, 2000))
 
         val properties = new Properties

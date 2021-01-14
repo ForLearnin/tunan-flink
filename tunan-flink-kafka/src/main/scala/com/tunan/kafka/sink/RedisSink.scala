@@ -22,13 +22,14 @@ class RedisSink extends RichSinkFunction[(String, String, Int)] {
         val port = parameters.getInt("redis.port", 6379)
         val db = parameters.getInt("redis.db", 0)
 
-        jedis  = new Jedis("aliyun",6379,6000)
-        println(jedis)
-//        jedis.select(db)
+        jedis = new Jedis(host, port, 6000)
+        println("打开连接: " + jedis)
+        jedis.select(db)
     }
 
     override def close(): Unit = {
         if (null != jedis) {
+            println(s"关闭连接: ${jedis}")
             jedis == null
         }
     }

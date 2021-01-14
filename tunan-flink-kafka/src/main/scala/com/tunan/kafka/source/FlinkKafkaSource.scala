@@ -1,4 +1,4 @@
-package com.tunan.kafka.utils
+package com.tunan.kafka.source
 
 import java.util.Properties
 
@@ -11,7 +11,7 @@ import org.apache.flink.streaming.api.environment.CheckpointConfig.ExternalizedC
 import org.apache.flink.streaming.api.scala.{DataStream, StreamExecutionEnvironment}
 import org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumer
 
-object FlinkKafkaUtils {
+object FlinkKafkaSource {
 
     private val env = StreamExecutionEnvironment.getExecutionEnvironment
 

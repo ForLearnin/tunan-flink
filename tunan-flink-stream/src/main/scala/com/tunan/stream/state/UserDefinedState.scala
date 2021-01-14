@@ -169,7 +169,6 @@ class MapValueStateFlatMap extends RichFlatMapFunction[(String, String), (String
 
 		out.collect((value._1, value._2, behaviorCnt))
 	}
-
 }
 
 

@@ -21,7 +21,6 @@ object WriteToRedis {
 			Access(words(0).toLong, words(1), words(2).toLong)
 		}).keyBy(x => (x.time, x.domain)).sum(2)
 
-
 		class CustomRedis extends RedisMapper[Access]{
 			override def getCommandDescription: RedisCommandDescription = {
 				new RedisCommandDescription(RedisCommand.HSET, "access")
@@ -32,14 +31,14 @@ object WriteToRedis {
 			override def getValueFromData(data: Access): String = data.traffics.toString
 		}
 
-
 		val conf = new FlinkJedisPoolConfig
 		.Builder()
 		  .setHost("aliyun")
+		  .setPort(16379)
+		  .setTimeout(60000)
 		  .build()
 		result.addSink(new RedisSink[Access](conf, new CustomRedis))
 
 		env.execute(this.getClass.getSimpleName)
 	}
 }
-
