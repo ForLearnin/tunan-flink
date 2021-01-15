@@ -29,6 +29,7 @@ under the License.
         <module>tunan-flink-stream</module>
         <module>tunan-flink-utils</module>
         <module>tunan-flink-kafka</module>
+        <module>tunan-flink-item</module>
     </modules>
     <packaging>pom</packaging>
 

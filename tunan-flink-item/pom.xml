@@ -6,45 +6,52 @@
         <artifactId>tunan-flink</artifactId>
         <groupId>com.tunan.flink</groupId>
         <version>1.0.0</version>
-        <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <packaging>jar</packaging>
 
-    <artifactId>tunan-flink-utils</artifactId>
-
+    <artifactId>tunan-flink-item</artifactId>
     <dependencies>
         <dependency>
-            <groupId>redis.clients</groupId>
-            <artifactId>jedis</artifactId>
-            <version>2.9.0</version>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-clients_${scala.binary.version}</artifactId>
         </dependency>
         <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-streaming-scala_${scala.binary.version}</artifactId>
         </dependency>
-        <!--scalikejdbc相关依赖-->
         <dependency>
-            <groupId>org.scalikejdbc</groupId>
-            <artifactId>scalikejdbc_2.12</artifactId>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>1.7.7</version>
         </dependency>
-        <!--scalikejdbc相关依赖-->
         <dependency>
-            <groupId>org.scalikejdbc</groupId>
-            <artifactId>scalikejdbc-config_2.12</artifactId>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.17</version>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>org.scala-lang</groupId>-->
-<!--            <artifactId>scala-library</artifactId>-->
-<!--        </dependency>-->
-
         <dependency>
-            <groupId>org.apache.phoenix</groupId>
-            <artifactId>phoenix-client</artifactId>
-            <version>4.14.1-HBase-1.4</version>
+            <groupId>com.tunan.flink</groupId>
+            <artifactId>tunan-flink-utils</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-statebackend-rocksdb_${scala.binary.version}</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-client</artifactId>
+        </dependency>
+        <!--        <dependency>-->
+        <!--            <groupId>org.scala-lang</groupId>-->
+        <!--            <artifactId>scala-library</artifactId>-->
+        <!--        </dependency>-->
+        <dependency>
+            <groupId>org.apache.bahir</groupId>
+            <artifactId>flink-connector-redis_2.11</artifactId>
+            <version>1.1-SNAPSHOT</version>
         </dependency>
     </dependencies>
-
     <build>
         <plugins>
             <!-- We use the maven-shade plugin to create a fat jar that contains all necessary dependencies. -->
@@ -186,4 +193,5 @@
             </plugin>
         </plugins>
     </build>
+
 </project>

@@ -30,7 +30,7 @@ object WindowsApp {
         // 滚动 按次数提交window
         //		countWindowAll(stream)
         // 滚动 按时间提交window
-        //		timeWindowAll(stream)
+//        		timeWindowAll(stream)
         // 滑动window
         //		slideWindowAll(stream)
 
