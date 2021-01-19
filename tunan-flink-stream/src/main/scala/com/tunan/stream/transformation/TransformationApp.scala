@@ -41,7 +41,7 @@ object TransformationApp {
             val words = row.split(",").map(_.trim)
             Access(words(0).toLong, words(1), words(2).toLong)
         })
-        student.connect(access).map(a => a, b => b).print()
+        student.connect(access).map(a => a, b => b)
 
     }
 
