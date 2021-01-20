@@ -8,7 +8,7 @@ import org.apache.flink.streaming.api.TimeCharacteristic
 import org.apache.flink.streaming.api.functions.timestamps.BoundedOutOfOrdernessTimestampExtractor
 import org.apache.flink.streaming.api.scala.StreamExecutionEnvironment
 import org.apache.flink.streaming.api.scala.function.ProcessWindowFunction
-import org.apache.flink.streaming.api.windowing.assigners.TumblingEventTimeWindows
+import org.apache.flink.streaming.api.windowing.assigners.{SlidingEventTimeWindows, TumblingEventTimeWindows}
 import org.apache.flink.streaming.api.windowing.time.Time
 import org.apache.flink.streaming.api.windowing.windows.TimeWindow
 import org.apache.flink.util.Collector
@@ -38,7 +38,7 @@ object WindowByEventTime {
           })
           .keyBy(_._1)  // keyBy
           // 定义滑动窗口
-          .window(TumblingEventTimeWindows.of(Time.seconds(3)))
+          .window(SlidingEventTimeWindows.of(Time.seconds(6),Time.seconds(3)))
           // 实现reduce函数
           .reduce(new ReduceFunction[(String, Int)] {
               // 对相同key的数据进行reduce操作

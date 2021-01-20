@@ -104,6 +104,11 @@ under the License.
                 <version>4.5.2</version>
             </dependency>
             <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpasyncclient</artifactId>
+                <version>4.1.2</version>
+            </dependency>
+            <dependency>
                 <groupId>org.apache.flink</groupId>
                 <artifactId>flink-connector-kafka_2.12</artifactId>
                 <version>${flink.version}</version>

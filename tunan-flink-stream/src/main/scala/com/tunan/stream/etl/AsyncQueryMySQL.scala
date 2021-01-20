@@ -36,14 +36,13 @@ class AsyncMySQLRequest extends RichAsyncFunction[String, Student] {
 
 
     override def open(parameters: Configuration): Unit = {
-        println(" ============= ===============")
 
         executorService = java.util.concurrent.Executors.newFixedThreadPool(20)
 
         //  拿的是一个dataSource
         //  dataSource = MySQLPoolUtils.getDataSource
 
-        //  dataSource的个数由并行度决定
+        //  dataSource的个数由并行度决定，每个dataSource最多创建20个进程，因为线程池的大小就是20
         dataSource = new DruidDataSource
         dataSource.setDriverClassName(MySQLPoolUtils.DRIVER)
         dataSource.setUsername(MySQLPoolUtils.USER)
@@ -52,8 +51,6 @@ class AsyncMySQLRequest extends RichAsyncFunction[String, Student] {
         dataSource.setInitialSize(5)
         dataSource.setMinIdle(10)
         dataSource.setMaxActive(20)
-
-        println(dataSource.getName)
 
     }
 
