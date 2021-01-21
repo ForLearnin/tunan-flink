@@ -1,4 +1,4 @@
-package com.tunan.stream.etl
+package com.tunan.stream.async
 
 import java.sql.{Connection, PreparedStatement, ResultSet}
 import java.util.concurrent.{Callable, ExecutorService, TimeUnit}
@@ -21,7 +21,8 @@ object AsyncQueryMySQL {
         val env = StreamExecutionEnvironment.getExecutionEnvironment
         val stream = env.socketTextStream("aliyun", 9999)
 
-        val result = AsyncDataStream.unorderedWait(stream, new AsyncMySQLRequest(), 1000, TimeUnit.MILLISECONDS, 10).setParallelism(2)
+        // capacity 默认100   线程池 * 并行度 = ?
+        val result = AsyncDataStream.unorderedWait(stream, new AsyncMySQLRequest(), 2000, TimeUnit.MILLISECONDS, 20).setParallelism(2)
         result.print().setParallelism(2)
         env.execute(this.getClass.getSimpleName)
     }

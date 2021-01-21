@@ -10,7 +10,7 @@ import org.apache.flink.api.scala._
 import org.apache.flink.configuration.Configuration
 import org.apache.flink.streaming.api.functions.sink.{RichSinkFunction, SinkFunction}
 import org.apache.flink.streaming.api.scala.StreamExecutionEnvironment
-import org.apache.flink.streaming.api.scala.function.ProcessAllWindowFunction
+import org.apache.flink.streaming.api.scala.function.ProcessWindowFunction
 import org.apache.flink.streaming.api.windowing.assigners.TumblingProcessingTimeWindows
 import org.apache.flink.streaming.api.windowing.time.Time
 import org.apache.flink.streaming.api.windowing.windows.TimeWindow
@@ -23,8 +23,8 @@ object VisitorsRadar {
 
     def main(args: Array[String]): Unit = {
         val env = StreamExecutionEnvironment.getExecutionEnvironment
-//        val stream = env.readTextFile("file:///sparkspace/tunan-flink/tunan-flink-item/data/file.txt")
-        val stream = env.socketTextStream("aliyun",9999)
+        //        val stream = env.readTextFile("file:///sparkspace/tunan-flink/tunan-flink-item/data/file.txt")
+        val stream = env.socketTextStream("aliyun", 9999)
 
         stream.map(row => {
             val words = row.split(",")
@@ -32,7 +32,6 @@ object VisitorsRadar {
                 words(5), words(6), words(7), 0, words(8).toInt, 0, words(9),
                 words(10), words(11), words(12), words(13))
         })
-          .keyBy(x => (x.belonger_id, x.member_id, x.source_plate))
           .flatMap(new RichFlatMapFunction[Access, Access] {
               var sumTime: ValueState[Long] = _
               var logCount: ValueState[Long] = _
@@ -77,8 +76,10 @@ object VisitorsRadar {
 
                   out.collect(value)
               }
-          }).windowAll(TumblingProcessingTimeWindows.of(Time.seconds(3)))
-          .process(new ProcessAllWindowFunction[Access, String, TimeWindow] {
+          })
+          .keyBy(x => (x.belonger_id, x.member_id, x.source_plate))
+          .window(TumblingProcessingTimeWindows.of(Time.seconds(3)))
+          .process(new ProcessWindowFunction[Access, String, (String, String, String), TimeWindow] {
               var conn: Connection = _
               var state: PreparedStatement = _
               val insertListSQL = "UPSERT INTO UF.VISIT_LIST_DAY(BELONGER_ID, VISIT_TIME, MEMBER_ID, SOURCE_PLATE, THUMB, NAME, SOURCE_PLATFORM, CONTENT, VISIT_NUM, STAY_TIME, TOTAL_STAY_TIME, ACT, TITLE, HOME_IMG, HOUSE_NUMBER, STRESS_NAME) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
@@ -93,7 +94,7 @@ object VisitorsRadar {
                   conn.close()
               }
 
-              override def process(context: Context, elements: Iterable[Access], out: Collector[String]): Unit = {
+              override def process(key: (String, String, String), context: Context, elements: Iterable[Access], out: Collector[String]): Unit = {
                   for (ele <- elements) {
                       state.setString(1, ele.belonger_id)
                       state.setString(2, ele.visit_time)
@@ -119,8 +120,8 @@ object VisitorsRadar {
 
                   out.collect("写入Phoenix成功")
               }
-
-          }).print()
+          })
+          .print()
 
         env.execute(this.getClass.getSimpleName)
     }

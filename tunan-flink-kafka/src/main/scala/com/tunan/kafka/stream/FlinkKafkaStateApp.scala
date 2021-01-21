@@ -23,6 +23,7 @@ object FlinkKafkaStateApp {
 
         val stream: DataStream[String] = FlinkKafkaSource.createKafkaSource(parameters)
 
+        // word,count
         stream
           .map(x => {
               val words = x.split(",").map(_.trim)

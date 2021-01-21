@@ -5,7 +5,7 @@ import org.apache.flink.api.common.state.ReducingStateDescriptor
 import org.apache.flink.api.scala._
 import org.apache.flink.streaming.api.scala.StreamExecutionEnvironment
 import org.apache.flink.streaming.api.windowing.time.Time
-import org.apache.flink.streaming.api.windowing.triggers.{CountTrigger, Trigger, TriggerResult}
+import org.apache.flink.streaming.api.windowing.triggers.{Trigger, TriggerResult}
 import org.apache.flink.streaming.api.windowing.windows.TimeWindow
 
 
@@ -20,8 +20,9 @@ object CountTrigger {
         stream
           .map(x => (x, 1))
           .keyBy(0)
+          // 基于时间和数量两个条件触发
           .timeWindow(Time.seconds(5))
-//          .trigger(org.apache.flink.streaming.api.windowing.triggers.CountTrigger.of(5))
+          //          .trigger(org.apache.flink.streaming.api.windowing.triggers.CountTrigger.of(5))
           .trigger(CountTrigger.of(5))
           .sum(1)
           .print()
@@ -31,7 +32,7 @@ object CountTrigger {
     }
 
 
-    def of(max: Int): CountTrigger ={
+    def of(max: Int): CountTrigger = {
         new CountTrigger(max)
     }
 }

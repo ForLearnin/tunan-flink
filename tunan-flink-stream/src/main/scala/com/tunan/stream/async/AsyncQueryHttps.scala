@@ -1,4 +1,4 @@
-package com.tunan.stream.etl
+package com.tunan.stream.async
 
 import java.util.concurrent.TimeUnit
 
@@ -28,7 +28,8 @@ object AsyncQueryHttps {
         val env = StreamExecutionEnvironment.getExecutionEnvironment
         val stream = env.socketTextStream("aliyun", 9999)
 
-        val result = AsyncDataStream.unorderedWait(stream, new AsyncHttpsRequest(), 1000, TimeUnit.MILLISECONDS, 10)
+        // capacity 默认100   线程池 * 并行度 = ?
+        val result = AsyncDataStream.unorderedWait(stream, new AsyncHttpsRequest(), 2000, TimeUnit.MILLISECONDS, 20)
         result.print()
         env.execute(this.getClass.getSimpleName)
     }

@@ -8,6 +8,7 @@ import org.apache.flink.api.common.eventtime.{SerializableTimestampAssigner, Wat
 import org.apache.flink.api.common.functions.AggregateFunction
 import org.apache.flink.api.scala._
 import org.apache.flink.streaming.api.TimeCharacteristic
+import org.apache.flink.streaming.api.functions.windowing.ProcessAllWindowFunction
 import org.apache.flink.streaming.api.scala.StreamExecutionEnvironment
 import org.apache.flink.streaming.api.scala.function.WindowFunction
 import org.apache.flink.streaming.api.windowing.assigners.TumblingEventTimeWindows
@@ -47,6 +48,7 @@ object CountPVBySkew {
 
               override def merge(a: Long, b: Long): Long = a + b
           }, new WindowFunction[Long, PVCount, String, TimeWindow] {
+
               override def apply(key: String, window: TimeWindow, input: Iterable[Long], out: Collector[PVCount]): Unit = {
                   out.collect(PVCount(key, new Timestamp(window.getEnd).toString, input.head))
               }
