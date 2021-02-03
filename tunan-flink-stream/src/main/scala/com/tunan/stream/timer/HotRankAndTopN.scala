@@ -1,10 +1,7 @@
-package com.tunan.stream.analysis
-
-import java.time.Duration
+package com.tunan.stream.timer
 
 import com.tunan.stream.bean.{Behavior, ItemCount}
 import org.apache.commons.lang3.time.FastDateFormat
-import org.apache.flink.api.common.eventtime.{SerializableTimestampAssigner, WatermarkStrategy}
 import org.apache.flink.api.common.functions.AggregateFunction
 import org.apache.flink.api.common.state.{ValueState, ValueStateDescriptor}
 import org.apache.flink.api.scala._
@@ -19,7 +16,6 @@ import org.apache.flink.util.Collector
 
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
-
 
 /**
  *
@@ -39,11 +35,11 @@ object HotRankAndTopN {
         val stream = env.socketTextStream("aliyun", 9999)
           .filter(row => {
               var flag = true
-              if(null == row || "" == row){
+              if (null == row || "" == row) {
                   flag = false
               }
 
-              if(row.split(",").length != 5){
+              if (row.split(",").length != 5) {
                   flag = false
               }
 
@@ -54,10 +50,10 @@ object HotRankAndTopN {
 
               Behavior(splits(0), splits(1), splits(2), splits(3), format.parse(splits(4)).getTime)
           })
-          .assignTimestampsAndWatermarks(WatermarkStrategy.forBoundedOutOfOrderness(Duration.ofSeconds(0))
-            .withTimestampAssigner(new SerializableTimestampAssigner[Behavior] {
-                override def extractTimestamp(element: Behavior, recordTimestamp: Long): Long = element.timestamp
-            }))
+          //          .assignTimestampsAndWatermarks(WatermarkStrategy.forBoundedOutOfOrderness(Duration.ofSeconds(0))
+          //            .withTimestampAssigner(new SerializableTimestampAssigner[Behavior] {
+          //                override def extractTimestamp(element: Behavior, recordTimestamp: Long): Long = element.timestamp
+          //            }))
           .keyBy(x => (x.itemId, x.behavior))
           .window(SlidingEventTimeWindows.of(Time.minutes(10), Time.minutes(1)))
           .aggregate(new AggregateFunction[Behavior, Long, Long] {
@@ -103,7 +99,7 @@ object HotRankAndTopN {
               override def onTimer(timestamp: Long, ctx: KeyedProcessFunction[(String, Long, Long), ItemCount, String]#OnTimerContext, out: Collector[String]): Unit = {
                   val buffer = valueState.value()
 
-                  // 自定义排序器
+                  // 自定义排序器 用来替换下面的那种性能低的方法
                   val ord: Ordering[ItemCount] = new Ordering[ItemCount]() {
                       override def compare(x: ItemCount, y: ItemCount): Int = {
                           if (!x.behavior.equals(y.behavior) && x.count == y.count) {
@@ -118,13 +114,13 @@ object HotRankAndTopN {
                   val set = mutable.TreeSet.empty(ord)
                   buffer.foreach(x => {
                       set.add(x)
-                      if(set.size > 1){
+                      if (set.size > 1) {
                           set.remove(set.last)
                       }
                   })
 
-                    // 数据量大的时候性能不好
-//                  val sortBuffer = buffer.sortBy(- _.count).take(1)
+                  // 数据量大的时候性能不好
+                  //                  val sortBuffer = buffer.sortBy(- _.count).take(1)
                   valueState.clear()
                   // 写出
                   out.collect(set.mkString(" "))
