@@ -82,14 +82,14 @@ class CustomMySQL extends RichSinkFunction[Access] {
 
 
     // 每条数据做一次插入操作，性能低下，需要根据window优化
-    override def invoke(access: Access, context: SinkFunction.Context): Unit = {
-        println(s"执行线程: ${Thread.currentThread().getId}")
-        val buffer = new ListBuffer[Seq[Any]]
-        buffer += Seq(access.time, access.domain, access.traffics)
-
-        insertBatchData(sql, buffer)
-        println(access)
-    }
+//    override def invoke(access: Access, context: SinkFunction.Context): Unit = {
+//        println(s"执行线程: ${Thread.currentThread().getId}")
+//        val buffer = new ListBuffer[Seq[Any]]
+//        buffer += Seq(access.time, access.domain, access.traffics)
+//
+//        insertBatchData(sql, buffer)
+//        println(access)
+//    }
 
     private def insertBatchData(sql: String, params: Seq[Seq[Any]]) = {
         DB.localTx(implicit session => {
@@ -121,15 +121,15 @@ class CustomMySQLByJDBC extends RichSinkFunction[Access] {
 
 
     // 每条数据做一次插入操作，性能低下，需要根据window优化
-    override def invoke(access: Access, context: SinkFunction.Context): Unit = {
-        println(s"执行线程: ${Thread.currentThread().getId}")
-
-        pstate.setLong(1,access.time)
-        pstate.setString(2,access.domain)
-        pstate.setLong(3,access.traffics)
-
-        pstate.execute()
-    }
+//    override def invoke(access: Access, context: SinkFunction.Context): Unit = {
+//        println(s"执行线程: ${Thread.currentThread().getId}")
+//
+//        pstate.setLong(1,access.time)
+//        pstate.setString(2,access.domain)
+//        pstate.setLong(3,access.traffics)
+//
+//        pstate.execute()
+//    }
 
     override def close(): Unit = {
         super.close()

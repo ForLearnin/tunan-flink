@@ -4,11 +4,9 @@ import java.sql.Timestamp
 import java.time.Duration
 
 import com.tunan.stream.bean.{AccessPage, PVCount}
-import org.apache.flink.api.common.eventtime.{SerializableTimestampAssigner, WatermarkStrategy}
 import org.apache.flink.api.common.functions.AggregateFunction
 import org.apache.flink.api.scala._
 import org.apache.flink.streaming.api.TimeCharacteristic
-import org.apache.flink.streaming.api.functions.windowing.ProcessAllWindowFunction
 import org.apache.flink.streaming.api.scala.StreamExecutionEnvironment
 import org.apache.flink.streaming.api.scala.function.WindowFunction
 import org.apache.flink.streaming.api.windowing.assigners.TumblingEventTimeWindows
@@ -31,10 +29,10 @@ object CountPVBySkew {
               val splits = x.split(",")
               AccessPage(splits(0), splits(1), splits(2), splits(3).toLong)
           })
-          .assignTimestampsAndWatermarks(WatermarkStrategy.forBoundedOutOfOrderness(Duration.ofSeconds(0))
-            .withTimestampAssigner(new SerializableTimestampAssigner[AccessPage] {
-                override def extractTimestamp(element: AccessPage, recordTimestamp: Long): Long = element.ts
-            }))
+//          .assignTimestampsAndWatermarks(WatermarkStrategy.forBoundedOutOfOrderness(Duration.ofSeconds(0))
+//            .withTimestampAssigner(new SerializableTimestampAssigner[AccessPage] {
+//                override def extractTimestamp(element: AccessPage, recordTimestamp: Long): Long = element.ts
+//            }))
           // 分
           .map(x => (Random.nextInt(10).toString, 1L))
           .keyBy(x => x._1)

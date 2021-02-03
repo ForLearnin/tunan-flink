@@ -41,11 +41,11 @@ class MysqlCustomerSink extends RichSinkFunction[Access] {
         deptDAO = new DeptDAO
     }
 
-    override def invoke(value: Access, context: SinkFunction.Context): Unit = {
-        val list = new ListBuffer[Seq[Any]]
-        list.append(Seq(value.time, value.domain, value.traffics))
-        deptDAO.bacthInsert(list)
-    }
+//    override def invoke(value: Access, context: SinkFunction.Context): Unit = {
+//        val list = new ListBuffer[Seq[Any]]
+//        list.append(Seq(value.time, value.domain, value.traffics))
+//        deptDAO.bacthInsert(list)
+//    }
 
 
     override def close(): Unit = {

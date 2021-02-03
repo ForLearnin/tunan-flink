@@ -4,7 +4,6 @@ import java.sql.Timestamp
 import java.time.Duration
 
 import com.tunan.stream.bean.{AccessPage, UVCount}
-import org.apache.flink.api.common.eventtime.{SerializableTimestampAssigner, WatermarkStrategy}
 import org.apache.flink.api.common.functions.AggregateFunction
 import org.apache.flink.api.scala._
 import org.apache.flink.streaming.api.TimeCharacteristic
@@ -28,10 +27,10 @@ object CountUVByAgg {
               val splits = x.split(",")
               AccessPage(splits(0), splits(1), splits(2), splits(3).toLong)
           })
-          .assignTimestampsAndWatermarks(WatermarkStrategy.forBoundedOutOfOrderness(Duration.ofSeconds(0))
-            .withTimestampAssigner(new SerializableTimestampAssigner[AccessPage] {
-                override def extractTimestamp(element: AccessPage, recordTimestamp: Long): Long = element.ts
-            }))
+//          .assignTimestampsAndWatermarks(WatermarkStrategy.forBoundedOutOfOrderness(Duration.ofSeconds(0))
+//            .withTimestampAssigner(new SerializableTimestampAssigner[AccessPage] {
+//                override def extractTimestamp(element: AccessPage, recordTimestamp: Long): Long = element.ts
+//            }))
 
           .windowAll(TumblingEventTimeWindows.of(Time.hours(1)))
           // 这个聚合操作在多个Task上执行
@@ -43,6 +42,7 @@ object CountUVByAgg {
               override def getResult(accumulator: Set[String]): Long = accumulator.size.toLong
 
               override def merge(a: Set[String], b: Set[String]): Set[String] = ???
+
               // 输出window的结果
           }, new AllWindowFunction[Long, UVCount, TimeWindow] {
               override def apply(window: TimeWindow, input: Iterable[Long], out: Collector[UVCount]): Unit = {

@@ -37,16 +37,16 @@ object WriteToMySQL {
 			// 每条数据做一次插入操作，性能低下，需要根据window优化
 
 
-			override def invoke(value: Access, context: SinkFunction.Context): Unit = {
-				pstate.setLong(1,value.time)
-				pstate.setString(2,value.domain)
-				pstate.setLong(3,value.traffics)
-
-				pstate.execute()
-
-				// 如果不为-1 则代表有更新
-				println(pstate.getUpdateCount)
-			}
+//			override def invoke(value: Access, context: SinkFunction.Context): Unit = {
+//				pstate.setLong(1,value.time)
+//				pstate.setString(2,value.domain)
+//				pstate.setLong(3,value.traffics)
+//
+//				pstate.execute()
+//
+//				// 如果不为-1 则代表有更新
+//				println(pstate.getUpdateCount)
+//			}
 
 			override def close(): Unit = {
 				MySQLUtils.close(conn,pstate,null)
