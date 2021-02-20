@@ -30,6 +30,7 @@ under the License.
         <module>tunan-flink-utils</module>
         <module>tunan-flink-kafka</module>
         <module>tunan-flink-item</module>
+        <module>tunan-flink-table</module>
     </modules>
     <packaging>pom</packaging>
 
@@ -88,6 +89,23 @@ under the License.
 
     <dependencyManagement>
         <dependencies>
+            <!-- flink table dependencies -->
+            <dependency>
+                <groupId>org.apache.flink</groupId>
+                <artifactId>flink-table-api-scala-bridge_${scala.binary.version}</artifactId>
+                <version>${flink.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.flink</groupId>
+                <artifactId>flink-table-planner-blink_${scala.binary.version}</artifactId>
+                <version>${flink.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.flink</groupId>
+                <artifactId>flink-table-common</artifactId>
+                <version>${flink.version}</version>
+            </dependency>
+
             <dependency>
                 <groupId>com.alibaba</groupId>
                 <artifactId>druid</artifactId>

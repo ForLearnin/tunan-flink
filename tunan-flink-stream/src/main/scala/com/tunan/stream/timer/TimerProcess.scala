@@ -64,21 +64,21 @@ object TimerProcess {
 
         // 定义状态
         var countState: ValueState[Long] = _
-        var sentState: ValueState[Boolean] = _
+        var sendState: ValueState[Boolean] = _
         var timerState: ValueState[Long] = _
 
 
         override def open(parameters: Configuration): Unit = {
             // 初始化状态
             countState = getRuntimeContext.getState(new ValueStateDescriptor[Long]("count", classOf[Long]))
-            sentState = getRuntimeContext.getState(new ValueStateDescriptor[Boolean]("set", classOf[Boolean]))
+            sendState = getRuntimeContext.getState(new ValueStateDescriptor[Boolean]("send", classOf[Boolean]))
             timerState = getRuntimeContext.getState(new ValueStateDescriptor[Long]("timer", classOf[Long]))
         }
 
         override def onTimer(timestamp: Long, ctx: KeyedProcessFunction[(String, String, String), AccessPage, AccessPage]#OnTimerContext, out: Collector[AccessPage]): Unit = {
             // 每天都从0开始计数
             if (timestamp == timerState.value()) {
-                sentState.clear()
+                sendState.clear()
                 countState.clear()
                 timerState.clear()
             }
@@ -100,8 +100,8 @@ object TimerProcess {
 
             // 如果超过阈值，触发警报，但是只触发一次
             if (currentCount >= max) {
-                if (!sentState.value()) {
-                    sentState.update(true)
+                if (!sendState.value()) {
+                    sendState.update(true)
                     ctx.output(outputTag, value.userId + "," + value.domain + new Timestamp(value.ts) + "超过阈值:" + max)
                 }
                 // 如果没有超过阈值则继续输出，并且更新count的状态
