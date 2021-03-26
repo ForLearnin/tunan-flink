@@ -31,6 +31,7 @@ under the License.
         <module>tunan-flink-kafka</module>
         <module>tunan-flink-item</module>
         <module>tunan-flink-table</module>
+        <module>tunan-flink-2021</module>
     </modules>
     <packaging>pom</packaging>
 
