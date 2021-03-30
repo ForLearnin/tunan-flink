@@ -80,7 +80,7 @@ under the License.
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <flink.version>1.10.0</flink.version>
+        <flink.version>1.10.3</flink.version>
         <scala.binary.version>2.12</scala.binary.version>
         <scala.version>2.12.10</scala.version>
         <scalikejdbc.version>2.5.2</scalikejdbc.version>
@@ -90,6 +90,19 @@ under the License.
 
     <dependencyManagement>
         <dependencies>
+
+            <dependency>
+                <groupId>org.apache.flink</groupId>
+                <artifactId>flink-hadoop-compatibility_${scala.binary.version}</artifactId>
+                <version>${flink.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.flink</groupId>
+                <artifactId>flink-hbase_${scala.binary.version}</artifactId>
+                <version>${flink.version}</version>
+            </dependency>
+
             <!-- flink table dependencies -->
             <dependency>
                 <groupId>org.apache.flink</groupId>
