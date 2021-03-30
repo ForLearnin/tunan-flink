@@ -9,7 +9,6 @@ object YieldTest {
 
     def main(args: Array[String]): Unit = {
 
-
         val lines: Iterator[String] = fromURL(getClass.getResource("/word.txt")).getLines()
 
         val strings = for {
