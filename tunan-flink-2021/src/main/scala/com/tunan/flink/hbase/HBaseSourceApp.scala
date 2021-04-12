@@ -9,7 +9,6 @@ import org.apache.flink.api.java.tuple.Tuple4
 import org.apache.flink.configuration.Configuration
 import org.apache.hadoop.hbase.TableName
 import org.apache.hadoop.hbase.util.Bytes
-import scalikejdbc.NoSession.connection
 
 
 object HBaseSourceApp {
@@ -30,18 +29,24 @@ object HBaseSourceApp {
     }
 
     class HBaseSource extends TableInputFormat[Tuple4[String, String, Int, String]] {
-        def createTable(): HTable = {
+        @transient var ht: HTable = _
+        @transient var connection: Connection = _
 
-            var ht: HTable = null
-            var connection: Connection = null
+        override def close(): Unit = {
+            if(ht != null){
+                ht.close()
+            }
+            if(connection != null){
+                connection.close()
+            }
+        }
+
+        def createTable(): HTable = {
             try {
                 connection = HBaseUtil.getConnection(HOST, PORT, TABLE_NAME)
-                val conf = connection.getConfiguration
-                ht = new HTable(conf,getTableName)
+                ht = connection.getTable(TableName.valueOf(TABLE_NAME)).asInstanceOf[HTable]
             } catch {
                 case ex: Exception => ex.printStackTrace()
-            } finally {
-                HBaseUtil.closeConnection(connection)
             }
             ht
         }
@@ -55,6 +60,8 @@ object HBaseSourceApp {
 
         override def getScanner: Scan = {
             val scan = new Scan()
+            scan.withStartRow(Bytes.toBytes("001"))
+            scan.withStopRow(Bytes.toBytes("003"))
             scan.addFamily(CF.getBytes())
             scan
         }
@@ -73,7 +80,6 @@ object HBaseSourceApp {
             )
         }
     }
-
 }
 
 
