@@ -9,6 +9,7 @@ import org.apache.flink.api.java.tuple.Tuple4
 import org.apache.flink.configuration.Configuration
 import org.apache.hadoop.hbase.TableName
 import org.apache.hadoop.hbase.util.Bytes
+import scalikejdbc.NoSession.connection
 
 
 object HBaseSourceApp {
@@ -42,11 +43,16 @@ object HBaseSourceApp {
         }
 
         def createTable(): HTable = {
+
+            var ht: HTable = null
+            var connection: Connection = null
             try {
                 connection = HBaseUtil.getConnection(HOST, PORT, TABLE_NAME)
                 ht = connection.getTable(TableName.valueOf(TABLE_NAME)).asInstanceOf[HTable]
             } catch {
                 case ex: Exception => ex.printStackTrace()
+            } finally {
+                HBaseUtil.closeConnection(connection)
             }
             ht
         }
@@ -80,6 +86,7 @@ object HBaseSourceApp {
             )
         }
     }
+
 }
 
 
