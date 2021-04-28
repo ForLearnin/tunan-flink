@@ -2,6 +2,7 @@ package com.tunan.flink.hbase
 
 import org.apache.flink.addons.hbase.{HBaseTableSchema, HBaseUpsertSinkFunction, HBaseWriteOptions}
 import org.apache.flink.api.common.serialization.SimpleStringSchema
+import org.apache.flink.api.common.state.ValueState
 import org.apache.flink.configuration
 import org.apache.flink.streaming.api.{CheckpointingMode, TimeCharacteristic}
 import org.apache.flink.streaming.api.functions.sink.RichSinkFunction
