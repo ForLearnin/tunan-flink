@@ -8,26 +8,32 @@ import scala.collection.mutable.ListBuffer
 class ScalikeOperator extends Serializable{
 
 
-    def getConnection(name:String= "a"):Unit = {
-        DBs.setup() //初始化配置
+    def getConnection(): Unit = {
         println("=======================连接连接成功" + Thread.currentThread().getId)
+        DBs.setupAll() //初始化配置
     }
 
-    def closeConnection(name:String= "a"){
-        DBs.close() //初始化配置
+    def closeConnection(){
         println("=======================连接关闭成功" + Thread.currentThread().getId)
+        DBs.closeAll() //初始化配置
     }
 
-    def batchInsert( sqlStr:String,params:ListBuffer[Seq[Any]] ): Unit ={
-        DB localTx { implicit session =>
-            sql"$sqlStr".batch(params: _*).apply()
+    def batchInsert( sql:String,params:ListBuffer[Seq[Any]] ): Unit ={
+        DB.localTx { implicit session =>
+            SQL(sql).batch(params: _*).apply()
         }
     }
 
     def batchInsert( sql:String,params:Seq[Seq[Any]] ): Unit ={
-        DB localTx { implicit session =>
+        DB.localTx { implicit session =>
             SQL(sql).batch(params: _*).apply()
         }
+    }
+    def insertBatchData(sql: String, params: Seq[Seq[Any]]): Unit = {
+        params.foreach(println(_))
+        DB.localTx(implicit session => {
+            SQL(sql).batch(params: _*).apply()
+        })
     }
 
     def batchByNameInsert( sql:SQL[Nothing, NoExtractor],params:Seq[Seq[(Symbol, Any)]] ): Unit ={
@@ -36,7 +42,7 @@ class ScalikeOperator extends Serializable{
         }
     }
 
-    def queryAll[A](sql:SQL[Nothing, NoExtractor],f: WrappedResultSet => A) ={
+    def queryAll[A](sql:SQL[Nothing, NoExtractor],f: WrappedResultSet => A): Unit ={
         DB readOnly { implicit session=>
             sql.map(f).list().apply()
         }

@@ -122,7 +122,7 @@ object HBaseStreamSinkApp {
             schema.addColumn("cf","age",classOf[String])
 
 
-            hbaseSink = new HBaseUpsertSinkFunction("student",schema,config,1024*1024,20,2*1000)
+            hbaseSink = new HBaseUpsertSinkFunction("student",schema,config,Int.MaxValue,3,Int.MaxValue)
             hbaseSink.open(null)
         }
 

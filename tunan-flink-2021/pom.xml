@@ -83,6 +83,11 @@
             <artifactId>flink-connector-redis_2.11</artifactId>
             <version>1.0</version>
         </dependency>
+        <dependency>
+            <groupId>com.tunan.flink</groupId>
+            <artifactId>tunan-flink-kafka</artifactId>
+            <version>1.0.0</version>
+        </dependency>
     </dependencies>
 
 

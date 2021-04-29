@@ -17,6 +17,7 @@ object SclikeJDBCSinkTest {
     def main(args: Array[String]): Unit = {
 
         val env = StreamExecutionEnvironment.getExecutionEnvironment
+        env.setParallelism(1)
 
         val files = env.readTextFile("tunan-flink-stream/data/access.txt")
 
@@ -36,22 +37,22 @@ class MysqlCustomerSink extends RichSinkFunction[Access] {
     var deptDAO: DeptDAO = _
 
     override def open(parameters: Configuration): Unit = {
-        super.open(parameters)
-        MysqlConnectPool.yqdataPoolSetup()
+
+
         deptDAO = new DeptDAO
     }
 
-//    override def invoke(value: Access, context: SinkFunction.Context): Unit = {
-//        val list = new ListBuffer[Seq[Any]]
-//        list.append(Seq(value.time, value.domain, value.traffics))
-//        deptDAO.bacthInsert(list)
-//    }
+    override def invoke(value: Access): Unit = {
+        val list = new ListBuffer[Seq[Any]]
+        list.append(Seq(value.time, value.domain, value.traffics))
+        deptDAO.bacthInsert(list)
+    }
 
 
     override def close(): Unit = {
         super.close()
-        MysqlConnectPool.yqdataPoolColse()
     }
+
 }
 
 

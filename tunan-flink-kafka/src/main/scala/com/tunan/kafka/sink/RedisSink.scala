@@ -9,7 +9,7 @@ class RedisSink extends RichSinkFunction[(String, String, Int)] {
 
     private var jedis: Jedis = _
 
-    override def invoke(value: (String, String, Int), context: SinkFunction.Context): Unit = {
+    override def invoke(value: (String, String, Int)): Unit = {
         if (!jedis.isConnected) {
             jedis.connect()
         }

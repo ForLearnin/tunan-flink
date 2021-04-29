@@ -22,7 +22,7 @@ object FlinkKafkaSource {
         env.getConfig.setGlobalJobParameters(parameters)
         // kafka保证幂等性的配置
         env.enableCheckpointing(parameters.getLong("checkpoint.interval", 2000L))
-        env.setStateBackend(new FsStateBackend(parameters.getRequired("checkpoint.path")))
+        env setStateBackend new FsStateBackend(parameters.getRequired("checkpoint.path"))
         env.getCheckpointConfig.enableExternalizedCheckpoints(ExternalizedCheckpointCleanup.RETAIN_ON_CANCELLATION)
         env.setRestartStrategy(RestartStrategies.fixedDelayRestart(parameters.getInt("restart.count", 3), parameters.getInt("restart.time", 2000)))
 
