@@ -19,7 +19,7 @@ object SourceApp {
 		//		readTextFile(env)
 		//		fromCollection(env)
 		//		fromParallelCollection(env)
-		//		sourceFunctionAccess(env)
+				sourceFunctionAccess(env)
 		//		parallelSourceFunctionAccess(env)
 		//		richParallelSourceFunctionAccess(env)
 		//		mysqlSourceFunction(env)

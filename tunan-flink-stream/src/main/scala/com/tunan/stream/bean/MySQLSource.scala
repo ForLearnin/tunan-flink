@@ -1,16 +1,17 @@
 package com.tunan.stream.bean
 
 import java.sql.{Connection, PreparedStatement, ResultSet}
-
 import com.tunan.utils.MySQLUtils
 import org.apache.flink.configuration.Configuration
-import org.apache.flink.streaming.api.functions.source.{RichParallelSourceFunction, SourceFunction}
+import org.apache.flink.streaming.api.functions.source.{RichParallelSourceFunction, RichSourceFunction, SourceFunction}
 
-class MySQLSource extends RichParallelSourceFunction[Student] {
+class MySQLSource extends RichSourceFunction[Student] {
 	val SQL = "select * from student"
 	var conn: Connection = _
 	var state: PreparedStatement = _
 	var rs: ResultSet = _
+
+	private var isRunning = true
 
 	override def open(parameters: Configuration): Unit = {
 
@@ -27,7 +28,7 @@ class MySQLSource extends RichParallelSourceFunction[Student] {
 
 	override def run(ctx: SourceFunction.SourceContext[Student]): Unit = {
 		rs = state.executeQuery()
-		while (rs.next()) {
+		while (rs.next() && isRunning) {
 			val id = rs.getInt("id")
 			val name = rs.getString("name")
 			val age = rs.getInt("age")
@@ -37,5 +38,7 @@ class MySQLSource extends RichParallelSourceFunction[Student] {
 		}
 	}
 
-	override def cancel(): Unit = ???
+	override def cancel(): Unit = {
+		isRunning = false
+	}
 }

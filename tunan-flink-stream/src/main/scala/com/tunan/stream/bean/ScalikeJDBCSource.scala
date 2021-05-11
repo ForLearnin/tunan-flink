@@ -1,11 +1,11 @@
 package com.tunan.stream.bean
 
 import org.apache.flink.configuration.Configuration
-import org.apache.flink.streaming.api.functions.source.{RichParallelSourceFunction, SourceFunction}
+import org.apache.flink.streaming.api.functions.source.{RichParallelSourceFunction, RichSourceFunction, SourceFunction}
 import scalikejdbc.{DB, SQL}
 import scalikejdbc.config.DBs
 
-class ScalikeJDBCSource extends RichParallelSourceFunction[Student]{
+class ScalikeJDBCSource extends RichSourceFunction[Student]{
 	val sql = "select * from student"
 
 	override def open(parameters: Configuration): Unit = {
