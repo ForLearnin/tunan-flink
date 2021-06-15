@@ -142,6 +142,7 @@ class DataUpsertSinkFunction extends RichSinkFunction[String] with CheckpointedF
 
 
 
+    // 不知道哪里调用，如果不注释掉，会在每次写入完成时关闭线程池
 //    override def close(): Unit = {
 //        if (this.scheduledFuture != null) {
 //            this.scheduledFuture.cancel(false)
@@ -160,6 +161,7 @@ class DataUpsertSinkFunction extends RichSinkFunction[String] with CheckpointedF
         }
     }
 
+    // 不需要实现
     override def initializeState(functionInitializationContext: FunctionInitializationContext): Unit = {
     }
 }
