@@ -28,14 +28,4 @@ trait BaseConfig {
 		val PORT = conf.getInt("port")
 		ConnectionConfig(DRIVER, USERNAME, PASSWORD, DB, HOST, PORT)
 	}
-
-	case class ConnectionConfig(
-				 DRIVER: String,
-				 USERNAME: String,
-				 PASSWORD: String,
-				 DB: String,
-				 HOST: String,
-				 PORT: Int
-			   )
-
 }

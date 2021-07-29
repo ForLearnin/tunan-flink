@@ -95,27 +95,27 @@ object JoinApp {
                       }
                   }).union(leftLateRight).print() // 合并
 
-        //    left.coGroup(right).where(_._1).equalTo(_._1)
-        //      .window(TumblingEventTimeWindows.of(Time.seconds(size)))
-        //      .apply(new CoGroupFunction[(String, String, Long), (String, String, Long), (String, String, String, Long, Long)] {
-        //        override def coGroup(first: lang.Iterable[(String, String, Long)], second: lang.Iterable[(String, String, Long)], out: Collector[(String, String, String, Long, Long)]): Unit = {
-        //          for (ele <- first) {
-        //            var joined = false
-        //
-        //            for (e <- second) {
-        //              out.collect((ele._1, ele._2, e._2, ele._3, e._3))
-        //              joined = true
-        //            }
-        //
-        //            if (!joined) {
-        //              out.collect((ele._1, ele._2, "-", ele._3, -999L))
-        //            }
-        //          }
-        //        }
-        //      }).print()
-
-
-        // inner join  ==>  stream join 的数据必须在一个窗口内才能join的上
+//            left.coGroup(right).where(_._1).equalTo(_._1)
+//              .window(TumblingEventTimeWindows.of(Time.seconds(size)))
+//              .apply(new CoGroupFunction[(String, String, Long), (String, String, Long), (String, String, String, Long, Long)] {
+//                override def coGroup(first: lang.Iterable[(String, String, Long)], second: lang.Iterable[(String, String, Long)], out: Collector[(String, String, String, Long, Long)]): Unit = {
+//                  for (ele <- first) {
+//                    var joined = false
+//
+//                    for (e <- second) {
+//                      out.collect((ele._1, ele._2, e._2, ele._3, e._3))
+//                      joined = true
+//                    }
+//
+//                    if (!joined) {
+//                      out.collect((ele._1, ele._2, "-", ele._3, -999L))
+//                    }
+//                  }
+//                }
+//              }).print()
+//
+//
+//         inner join  ==>  stream join 的数据必须在一个窗口内才能join的上
 //        left.join(right).where(_._1).equalTo(_._1)
 //          .window(TumblingEventTimeWindows.of(Time.seconds(size)))
 //          .apply(new JoinFunction[(String, String, Long), (String, String, Long), (String, String, String, Long, Long)] {

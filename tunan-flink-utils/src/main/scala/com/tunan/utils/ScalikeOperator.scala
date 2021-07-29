@@ -29,8 +29,8 @@ class ScalikeOperator extends Serializable{
             SQL(sql).batch(params: _*).apply()
         }
     }
+
     def insertBatchData(sql: String, params: Seq[Seq[Any]]): Unit = {
-        params.foreach(println(_))
         DB.localTx(implicit session => {
             SQL(sql).batch(params: _*).apply()
         })

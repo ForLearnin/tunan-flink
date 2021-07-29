@@ -96,7 +96,6 @@ class CustomMySQL extends RichSinkFunction[Access] {
     }
 
     private def insertBatchData(sql: String, params: Seq[Seq[Any]]) = {
-        params.foreach(println(_))
         DB.localTx(implicit session => {
             SQL(sql).batch(params: _*).apply()
         })
