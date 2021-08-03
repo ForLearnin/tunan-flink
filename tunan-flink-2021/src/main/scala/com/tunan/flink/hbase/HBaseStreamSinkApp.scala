@@ -135,8 +135,10 @@ object HBaseStreamSinkApp {
                 println(words.mkString(" - "))
                 val row = new Row(2)
                 val f = new Row(2)
+                // f: 放两个值，分别是name,age
                 f.setField(0,words(1))
                 f.setField(1,words(2))
+                // row: 放两个值，分别是key,f
                 row.setField(0,words(0))
                 row.setField(1,f)
 
