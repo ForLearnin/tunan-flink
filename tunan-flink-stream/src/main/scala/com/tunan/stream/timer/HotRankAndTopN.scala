@@ -50,10 +50,10 @@ object HotRankAndTopN {
 
               Behavior(splits(0), splits(1), splits(2), splits(3), format.parse(splits(4)).getTime)
           })
-          //          .assignTimestampsAndWatermarks(WatermarkStrategy.forBoundedOutOfOrderness(Duration.ofSeconds(0))
-          //            .withTimestampAssigner(new SerializableTimestampAssigner[Behavior] {
-          //                override def extractTimestamp(element: Behavior, recordTimestamp: Long): Long = element.timestamp
-          //            }))
+//                    .assignTimestampsAndWatermarks(WatermarkStrategy.forBoundedOutOfOrderness(Duration.ofSeconds(0))
+//                      .withTimestampAssigner(new SerializableTimestampAssigner[Behavior] {
+//                          override def extractTimestamp(element: Behavior, recordTimestamp: Long): Long = element.timestamp
+//                      }))
           .keyBy(x => (x.itemId, x.behavior))
           .window(SlidingEventTimeWindows.of(Time.minutes(10), Time.minutes(1)))
           .aggregate(new AggregateFunction[Behavior, Long, Long] {
