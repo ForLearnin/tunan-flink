@@ -33,6 +33,7 @@ under the License.
         <module>tunan-flink-table</module>
         <module>tunan-flink-2021</module>
         <module>tunan-netty</module>
+        <module>tunan-flink-doris</module>
     </modules>
     <packaging>pom</packaging>
 
