@@ -13,6 +13,20 @@
 
     <artifactId>tunan-flink-stream</artifactId>
     <dependencies>
+
+        <dependency>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-table-planner_2.11</artifactId>
+            <version>1.13.6</version>
+        </dependency>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.ververica</groupId>
+            <artifactId>flink-connector-mysql-cdc</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.apache.flink</groupId>
             <artifactId>flink-hadoop-compatibility_${scala.binary.version}</artifactId>

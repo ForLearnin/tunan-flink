@@ -82,16 +82,21 @@ under the License.
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <flink.version>1.10.0</flink.version>
-        <scala.binary.version>2.12</scala.binary.version>
-        <scala.version>2.12.10</scala.version>
+        <flink.version>1.13.6</flink.version>
+        <scala.binary.version>2.11</scala.binary.version>
+        <scala.version>2.11.12</scala.version>
         <scalikejdbc.version>2.5.2</scalikejdbc.version>
-        <jdbc.version>5.1.38</jdbc.version>
-        <hadoop.version>2.6.0-cdh5.16.2</hadoop.version>
+        <jdbc.version>8.0.21</jdbc.version>
+        <hadoop.version>2.9.2</hadoop.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>com.ververica</groupId>
+                <artifactId>flink-connector-mysql-cdc</artifactId>
+                <version>2.2.1</version>
+            </dependency>
             <dependency>
                 <groupId>io.netty</groupId>
                 <artifactId>netty-all</artifactId>
@@ -170,12 +175,12 @@ under the License.
             </dependency>
             <dependency>
                 <groupId>org.apache.flink</groupId>
-                <artifactId>flink-connector-kafka_2.12</artifactId>
+                <artifactId>flink-connector-kafka_2.11</artifactId>
                 <version>${flink.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.flink</groupId>
-                <artifactId>flink-statebackend-rocksdb_2.12</artifactId>
+                <artifactId>flink-statebackend-rocksdb_2.11</artifactId>
                 <version>${flink.version}</version>
             </dependency>
             <dependency>
