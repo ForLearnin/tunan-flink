@@ -116,8 +116,8 @@ public class Client {
 
         String dir = "/client";
         String file = "data.txt";
-        String src = "tunan-flink-2021/kafka-conf/parameters.properties";
-        String dst = "conf.properties";
+//        String src = "tunan-flink-2021/kafka-conf/parameters.properties";
+//        String dst = "conf.properties";
 
         try {
 
@@ -129,7 +129,7 @@ public class Client {
 
 //            listFile(dir);
 //            copyFileStreamToLocal(dir+"/"+dst,"tunan-flink-2021/kafka-conf/stream.properties");
-            copyFileStreamFromLocal("tunan-flink-2021/data/wc.txt", "/client/wc.txt");
+            copyFileStreamFromLocal("tunan-flink-2021/data.txt", "/client/wc.txt");
 
         } catch (IOException e) {
             e.printStackTrace();

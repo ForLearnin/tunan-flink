@@ -3,7 +3,7 @@ package com.tunan.table.udf
 import org.apache.flink.api.common.typeinfo.{TypeInformation, Types}
 import org.apache.flink.api.scala._
 import org.apache.flink.streaming.api.scala.{DataStream, StreamExecutionEnvironment}
-import org.apache.flink.table.api.scala.{StreamTableEnvironment, _}
+import org.apache.flink.table.api.bridge.scala.StreamTableEnvironment
 import org.apache.flink.table.functions.{FunctionContext, ScalarFunction}
 import org.apache.flink.types.Row
 
@@ -13,20 +13,20 @@ object FlinkUDFApp {
 
     def main(args: Array[String]): Unit = {
 
-        val env = StreamExecutionEnvironment.getExecutionEnvironment
-
-        val tableEnv = StreamTableEnvironment.create(env)
-        val stream: DataStream[String] = env.socketTextStream("aliyun", 9999)
-
-        tableEnv.createTemporaryView("word", stream, 'word)
-
-        tableEnv.registerFunction("r_word", new RandWord)
-
-        val resultTable = tableEnv.sqlQuery("select word,r_word(word) from word")
-
-        tableEnv.toRetractStream[Row](resultTable).print()
-
-        env.execute(this.getClass.getSimpleName)
+//        val env = StreamExecutionEnvironment.getExecutionEnvironment
+//
+//        val tableEnv = StreamTableEnvironment.create(env)
+//        val stream: DataStream[String] = env.socketTextStream("aliyun", 9999)
+//
+//        tableEnv.createTemporaryView("word", stream, 'word)
+//
+//        tableEnv.registerFunction("r_word", new RandWord)
+//
+//        val resultTable = tableEnv.sqlQuery("select word,r_word(word) from word")
+//
+//        tableEnv.toRetractStream[Row](resultTable).print()
+//
+//        env.execute(this.getClass.getSimpleName)
     }
 }
 

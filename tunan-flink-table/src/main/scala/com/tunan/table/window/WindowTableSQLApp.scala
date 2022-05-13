@@ -5,9 +5,9 @@ import org.apache.flink.streaming.api.scala.{DataStream, StreamExecutionEnvironm
 import org.apache.flink.api.scala._
 import org.apache.flink.streaming.api.functions.timestamps.BoundedOutOfOrdernessTimestampExtractor
 import org.apache.flink.streaming.api.windowing.time.Time
-import org.apache.flink.table.api.{Slide, Tumble}
-import org.apache.flink.table.api.scala.StreamTableEnvironment
-import org.apache.flink.table.api.scala._
+//import org.apache.flink.table.api.{Slide, Tumble}
+//import org.apache.flink.table.api.scala.StreamTableEnvironment
+//import org.apache.flink.table.api.scala._
 import org.apache.flink.types.Row
 
 object WindowTableSQLApp {
@@ -36,8 +36,8 @@ object WindowTableSQLApp {
             override def extractTimestamp(element: (Long, String, String, Double)): Long = element._1
         })
 
-        val tableEnv = StreamTableEnvironment.create(env)
-        tableEnv.createTemporaryView("access",input,'time,'user,'product,'money,'rowtime.rowtime)
+//        val tableEnv = StreamTableEnvironment.create(env)
+//        tableEnv.createTemporaryView("access",input,'time,'user,'product,'money,'rowtime.rowtime)
 
         // tumble api
 /*        val resultTable= tableEnv.from("access")
@@ -71,17 +71,17 @@ object WindowTableSQLApp {
                       |group by user,hop(rowtime,interval '2' second,interval '10' second)
                       |""".stripMargin
 
-        val resultTable = tableEnv.sqlQuery(sql)
-
-        val value = tableEnv.toRetractStream[Row](resultTable)
-        value.addSink(x => {
-            val value1: Row = x._2
-            val a = value1.getField(0)
-            val b = value1.getField(1)
-            val c = value1.getField(2)
-            val d = value1.getField(3)
-            println(a,b,c,d)
-        })
+//        val resultTable = tableEnv.sqlQuery(sql)
+//
+//        val value = tableEnv.toRetractStream[Row](resultTable)
+//        value.addSink(x => {
+//            val value1: Row = x._2
+//            val a = value1.getField(0)
+//            val b = value1.getField(1)
+//            val c = value1.getField(2)
+//            val d = value1.getField(3)
+//            println(a,b,c,d)
+//        })
 
         env.execute(this.getClass.getSimpleName)
 

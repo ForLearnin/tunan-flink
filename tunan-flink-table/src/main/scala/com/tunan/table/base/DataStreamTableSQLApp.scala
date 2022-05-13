@@ -1,8 +1,8 @@
 package com.tunan.table.base
 
-import org.apache.flink.streaming.api.scala.StreamExecutionEnvironment
-import org.apache.flink.table.api.scala.StreamTableEnvironment
 import org.apache.flink.api.scala._
+import org.apache.flink.streaming.api.scala.StreamExecutionEnvironment
+import org.apache.flink.table.api.bridge.scala.StreamTableEnvironment
 import org.apache.flink.types.Row
 
 object DataStreamTableSQLApp {
@@ -15,8 +15,8 @@ object DataStreamTableSQLApp {
         val stream = env.fromElements("zs,zs,zs", "ls,ls")
 
         val wc = stream
-          .flatMap(_.split(","))
-          .map(Word)
+            .flatMap(_.split(","))
+            .map(Word)
 
         val sourceTable = tableEnv.fromDataStream(wc)
         val resultTable = tableEnv.sqlQuery(
@@ -25,12 +25,13 @@ object DataStreamTableSQLApp {
                |group by word
                |""".stripMargin)
 
-          tableEnv
-          .toRetractStream[Row](resultTable)
-          .filter(_._1)
-          .print()
+        tableEnv
+            .toRetractStream[Row](resultTable)
+            .filter(_._1)
+            .print()
 
         env.execute(this.getClass.getSimpleName)
     }
 }
+
 case class Word(word: String)

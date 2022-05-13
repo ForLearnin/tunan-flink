@@ -1,9 +1,7 @@
 package com.tunan.table.base
 
-import org.apache.flink.api.scala.ExecutionEnvironment
-import org.apache.flink.table.api.scala.BatchTableEnvironment
-import org.apache.flink.api.scala._
-import org.apache.flink.table.api.Table
+import org.apache.flink.api.scala.{ExecutionEnvironment, _}
+import org.apache.flink.table.api.bridge.scala.BatchTableEnvironment
 import org.apache.flink.types.Row
 
 /*
@@ -25,17 +23,18 @@ object DatasetTableSQLApp {
         })
 
         val sourceTable = tableEnv.fromDataSet(batch)
-//        tableEnv.createTemporaryView("tmp_table", sourceTable)
-//        val resultTable = tableEnv.sqlQuery("select * from tmp_table")
-//        tableEnv.toDataSet[Row](resultTable).print()
+        //        tableEnv.createTemporaryView("tmp_table", sourceTable)
+        //        val resultTable = tableEnv.sqlQuery("select * from tmp_table")
+        //        tableEnv.toDataSet[Row](resultTable).print()
 
         val resultTable = sourceTable.groupBy("domain")
-          .aggregate("sum(traffic) as traffics")
-          .select("domain,traffics")
-          .orderBy("traffics.desc")
+            .aggregate("sum(traffic) as traffics")
+            .select("domain,traffics")
+            .orderBy("traffics.desc")
 
         tableEnv.toDataSet[Row](resultTable).print()
 
     }
 }
-case class Access(time:String,domain:String,traffic:Long)
+
+case class Access(time: String, domain: String, traffic: Long)
