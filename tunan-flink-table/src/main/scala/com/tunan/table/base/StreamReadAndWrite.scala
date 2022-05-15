@@ -11,13 +11,13 @@ import org.apache.flink.table.api.{EnvironmentSettings, SqlDialect, TableEnviron
  * @Date: 2022/5/13 09:06
  * @Description:
  */
-object StreamTableDemo2 {
+object StreamReadAndWrite {
 
     def main(args: Array[String]): Unit = {
 
         val env = StreamExecutionEnvironment.getExecutionEnvironment
         // 每隔1000 ms进行启动一个检查点【设置checkpoint的周期】
-        env.enableCheckpointing(3000)
+        env.enableCheckpointing(1000)
         // 高级选项：
         // 设置模式为exactly-once （这是默认值）
         env.getCheckpointConfig.setCheckpointingMode(CheckpointingMode.EXACTLY_ONCE)
@@ -31,7 +31,7 @@ object StreamTableDemo2 {
         //ExternalizedCheckpointCleanup.RETAIN_ON_CANCELLATION:表示一旦Flink处理程序被cancel后，会保留Checkpoint数据，以便根据实际需要恢复到指定的Checkpoint
         //ExternalizedCheckpointCleanup.DELETE_ON_CANCELLATION: 表示一旦Flink处理程序被cancel后，会删除Checkpoint数据，只有job执行失败的时候才会保存checkpoint
         env.getCheckpointConfig.enableExternalizedCheckpoints(CheckpointConfig.ExternalizedCheckpointCleanup.RETAIN_ON_CANCELLATION)
-        env.setParallelism(1)
+        env.setParallelism(6)
 
         val Settings = EnvironmentSettings.newInstance()
             .useBlinkPlanner()
@@ -39,7 +39,7 @@ object StreamTableDemo2 {
             .build()
 
         val tableEnv = StreamTableEnvironment.create(env, Settings)
-//        tableEnv.getConfig.setSqlDialect(SqlDialect.DEFAULT)
+        tableEnv.getConfig.setSqlDialect(SqlDialect.DEFAULT)
 
         val sourceDDL =
             """
