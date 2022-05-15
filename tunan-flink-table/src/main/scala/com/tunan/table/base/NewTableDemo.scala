@@ -25,6 +25,14 @@ object NewTableDemo {
 		// 执行SQL进行表的转换
 		val resultTable = tableEnv.sqlQuery("select name from a")
 
+		// 创建一张用于控制台打印输出的表
+		val createPrintOutDDL = "CREATE TABLE printOutTable (" +
+		  " user_name STRING, " +
+		  " cnt BIGINT " +
+		  ") WITH (" +
+		  " 'connector' = 'print' " +
+		  ")";
+
 		// 输出表
 		tableEnv.executeSql("insert into b from a")
 		resultTable.executeInsert("b")
