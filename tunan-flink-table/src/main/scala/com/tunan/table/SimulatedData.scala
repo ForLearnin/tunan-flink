@@ -2,7 +2,7 @@ package com.tunan.table
 
 import java.util.Date
 
-import com.tunan.utils.ScalikeOperator
+//import com.tunan.utils.ScalikeOperator
 
 import scala.collection.mutable.ListBuffer
 
@@ -30,15 +30,15 @@ object SimulatedData {
 
 
 		var seq = ListBuffer[Seq[Any]]()
-		val operator = new ScalikeOperator()
+//		val operator = new ScalikeOperator()
 
 		for (a <- 1 to 10000) {
 			seq += Seq(a, new Date(), "张三", 99.9, product_ids(a % 9), order_status(a % 2))
 			if(a % 1000 == 0){
-				operator.batchInsert(sql, seq)
+//				operator.batchInsert(sql, seq)
 				seq.clear()
 			}
 		}
-		operator.batchInsert(sql, seq)
+//		operator.batchInsert(sql, seq)
 	}
 }

@@ -4,14 +4,25 @@ import org.apache.flink.streaming.api.CheckpointingMode
 import org.apache.flink.streaming.api.environment.CheckpointConfig
 import org.apache.flink.streaming.api.scala.StreamExecutionEnvironment
 import org.apache.flink.table.api.bridge.scala.StreamTableEnvironment
-import org.apache.flink.table.api.{EnvironmentSettings, SqlDialect, TableEnvironment}
+import org.apache.flink.table.api.{EnvironmentSettings, SqlDialect}
 
 /**
  * @Auther: 李沅芮
  * @Date: 2022/5/13 09:06
  * @Description:
+ *
+ * https://www.mail-archive.com/user-zh@flink.apache.org/msg10658.html
+ *
+ *
+ * flink run-application -t yarn-application \
+ * -Djobmanager.memory.process.size=1024m \
+ * -Dtaskmanager.memory.process.size=2048m \
+ * -Dtaskmanager.numberOfTaskSlots=1 \
+ * -Dparallelism.default=1 \
+ * -Dyarn.application.name="TableStreamDemo" \
+ * -c com.tunan.table.base.TableStreamDemo file:///root/jar/original-tunan-flink-table-1.0.0.jar
  */
-object StreamReadAndWrite {
+object TableStreamDemo {
 
     def main(args: Array[String]): Unit = {
 
@@ -59,28 +70,6 @@ object StreamReadAndWrite {
               |)
               |""".stripMargin
 
-        val sourceOrder =
-            """
-              |
-              |CREATE TABLE orders (
-              |   order_id INT,
-              |   order_date TIMESTAMP(0),
-              |   customer_name STRING,
-              |   price DECIMAL(10, 5),
-              |   product_id INT,
-              |   order_status BOOLEAN,
-              |   PRIMARY KEY (order_id) NOT ENFORCED
-              | ) WITH (
-              |   'connector' = 'mysql-cdc',
-              |   'hostname' = 'aliyun',
-              |   'port' = '3306',
-              |   'username' = 'root',
-              |   'password' = 'Juan970907!@#',
-              |   'database-name' = 'mydb',
-              |   'table-name' = 'orders'
-              | )
-              |""".stripMargin
-
 
         val sinkDDL =
             """
@@ -99,43 +88,11 @@ object StreamReadAndWrite {
               |)
               |""".stripMargin
 
-        val sinkJoinDDL =
-            """
-              |CREATE TABLE enriched_orders (
-              |order_id INT,
-              |order_date TIMESTAMP(0),
-              |customer_name STRING,
-              |price DECIMAL(10, 5),
-              |product_id INT,
-              |order_status BOOLEAN,
-              |name STRING,
-              |description STRING,
-              |PRIMARY KEY (order_id) NOT ENFORCED
-              |) WITH (
-              |'connector' = 'jdbc',
-              |'driver' = 'com.mysql.cj.jdbc.Driver',
-              |'url' = 'jdbc:mysql://aliyun:3306/mydb?serverTimezone=UTC&useSSL=false',
-              |'username' = 'root',
-              |'password' = 'Juan970907!@#',
-              |'table-name' = 'enriched_orders'
-              |)
-              |""".stripMargin
-
-        val sinkOrder =
-            """
-              |INSERT INTO enriched_orders
-              | SELECT o.*, p.name, p.description
-              | FROM orders AS o
-              | LEFT JOIN products AS p ON o.product_id = p.id
-              |""".stripMargin
 
         val transformDmlSQL = "insert into products2 select * from products"
 
         tableEnv.executeSql(sourceDDL)
-        tableEnv.executeSql(sourceOrder)
         tableEnv.executeSql(sinkDDL)
-        tableEnv.executeSql(sinkJoinDDL)
-        tableEnv.executeSql(sinkOrder)
         tableEnv.executeSql(transformDmlSQL)
     }
 }
