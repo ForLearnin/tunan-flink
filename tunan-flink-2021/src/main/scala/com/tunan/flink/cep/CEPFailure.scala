@@ -41,7 +41,7 @@ object CEPFailure {
 		// 严格，连续两次登录失败
 		val pattern = Pattern.begin[LoginEvent]("begin").where(_.loginState.equalsIgnoreCase("failure"))
 		  .next("next").where(_.loginState.equalsIgnoreCase("failure"))
-		  .within(Time.seconds(3))
+		  .within(Time.seconds(2))
 
 		val patternStream = CEP.pattern(input, pattern)
 
