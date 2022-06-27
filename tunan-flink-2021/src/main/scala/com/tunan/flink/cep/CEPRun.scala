@@ -1,13 +1,18 @@
 package com.tunan.flink.cep
 
+import org.apache.flink.api.common.eventtime.{SerializableTimestampAssigner, WatermarkStrategy}
 import org.apache.flink.cep.scala.CEP
 import org.apache.flink.cep.scala.pattern.Pattern
 import org.apache.flink.cep.{PatternSelectFunction, PatternTimeoutFunction}
-import org.apache.flink.streaming.api.TimeCharacteristic
-import org.apache.flink.streaming.api.functions.timestamps.BoundedOutOfOrdernessTimestampExtractor
 import org.apache.flink.streaming.api.scala.{StreamExecutionEnvironment, _}
 import org.apache.flink.streaming.api.windowing.time.Time
 
+import java.time.Duration
+
+
+/*
+	有些用户会在官网下单，随后又会退款，并且在联盟下单，我们需要把这部分用户标记为风险用户
+ */
 import java.util
 
 object CEPRun {
@@ -15,9 +20,9 @@ object CEPRun {
 		val env = StreamExecutionEnvironment.getExecutionEnvironment
 		env.setParallelism(1)
 
-		/**
+		/*
 		* 监控到所有先在官网买课的有用户退款后又去联盟购课的用户
-		**/
+		*/
 		val elements = env.fromElements(
 			"600,gw,pay,1622689938",
 			"100,gw,pay,1622689952",
@@ -33,9 +38,10 @@ object CEPRun {
 		val input = elements.map(row => {
 			val splits = row.split(",")
 			Run(splits(0), splits(1), splits(2),splits(3).toLong)
-		}).assignTimestampsAndWatermarks(new BoundedOutOfOrdernessTimestampExtractor[Run](Time.seconds(0)) {
-			override def extractTimestamp(t: Run): Long = t.time * 1000
-		}).keyBy(_.user)
+		}).assignTimestampsAndWatermarks(WatermarkStrategy.forBoundedOutOfOrderness(Duration.ZERO)
+			.withTimestampAssigner(new SerializableTimestampAssigner[Run] {
+				override def extractTimestamp(t: Run, l: Long): Long = t.time
+			})).keyBy(_.user)
 
 		val pattern = Pattern.begin[Run]("first").where(x => x.behavior.equalsIgnoreCase("pay") && x.from.equalsIgnoreCase("gw"))
 		  .followedBy("next").where(x => x.behavior.equalsIgnoreCase("refund") && x.from.equalsIgnoreCase("gw"))
