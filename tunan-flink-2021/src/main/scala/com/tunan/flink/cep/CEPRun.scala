@@ -15,6 +15,9 @@ object CEPRun {
 		val env = StreamExecutionEnvironment.getExecutionEnvironment
 		env.setParallelism(1)
 
+		/**
+		* 监控到所有先在官网买课的有用户退款后又去联盟购课的用户
+		**/
 		val elements = env.fromElements(
 			"600,gw,pay,1622689938",
 			"100,gw,pay,1622689952",

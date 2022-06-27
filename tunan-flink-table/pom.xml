@@ -22,11 +22,24 @@
             <artifactId>flink-connector-jdbc_${scala.binary.version}</artifactId>
         </dependency>
 
-
         <dependency>
             <groupId>com.ververica</groupId>
             <artifactId>flink-connector-mysql-cdc</artifactId>
+            <version>2.2.1</version>
+<!--            <scope>system</scope>-->
+<!--            <systemPath>G:/jar/flink-cdc/flink-connector-mysql-cdc-2.2.1.jar</systemPath>-->
         </dependency>
+
+<!--        <dependency>-->
+<!--            <groupId>com.ververica</groupId>-->
+<!--            <artifactId>flink-connector-debezium</artifactId>-->
+<!--            <version>2.2.1</version>-->
+<!--        </dependency>-->
+
+
+
+
+
         <dependency>
             <groupId>org.apache.flink</groupId>
             <artifactId>flink-streaming-scala_${scala.binary.version}</artifactId>
